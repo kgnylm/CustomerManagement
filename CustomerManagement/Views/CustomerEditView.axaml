@@ -1,0 +1,96 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:CustomerManagement.ViewModels"
+             xmlns:models="using:CustomerManagement.Models"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="CustomerManagement.Views.CustomerEditView"
+             x:DataType="vm:CustomerEditViewModel">
+    <UserControl.Resources>
+        <StreamGeometry x:Key="add_regular">M10 1C14.968 1 19 5.032 19 10C19 14.968 14.968 19 10 19C5.032 19 1 14.968 1 10C1 5.032 5.032 1 10 1ZM10 2.5C5.8645 2.5 2.5 5.8645 2.5 10C2.5 14.1355 5.8645 17.5 10 17.5C14.1355 17.5 17.5 14.1355 17.5 10C17.5 5.8645 14.1355 2.5 10 2.5ZM10 6.25C10.4142 6.25 10.75 6.58579 10.75 7V9.25H13C13.4142 9.25 13.75 9.58579 13.75 10C13.75 10.4142 13.4142 10.75 13 10.75H10.75V13C10.75 13.4142 10.4142 13.75 10 13.75C9.58579 13.75 9.25 13.4142 9.25 13V10.75H7C6.58579 10.75 6.25 10.4142 6.25 10C6.25 9.58579 6.58579 9.25 7 9.25H9.25V7C9.25 6.58579 9.58579 6.25 10 6.25Z</StreamGeometry>
+    </UserControl.Resources>
+    
+    <Grid RowDefinitions="Auto,*,Auto" Margin="20">
+        <TextBlock Grid.Row="0"
+                  Text="Müşteri Bilgileri"
+                  Classes="h1"
+                  Margin="0,0,0,20"/>
+
+        <ScrollViewer Grid.Row="1">
+            <StackPanel Spacing="20">
+                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+                    <TextBlock Grid.Row="0" Grid.Column="0"
+                             Text="Müşteri Kodu:"
+                             VerticalAlignment="Center"
+                             Width="150"/>
+                    <StackPanel Grid.Row="0" Grid.Column="1" Spacing="5">
+                        <TextBox Text="{Binding CustomerCode}"
+                                MaxWidth="300"
+                                HorizontalAlignment="Left"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Row="1" Grid.Column="0"
+                             Text="Müşteri Adı:"
+                             VerticalAlignment="Center"/>
+                    <StackPanel Grid.Row="1" Grid.Column="1" Spacing="5">
+                        <TextBox Text="{Binding CustomerName}"
+                                MaxWidth="300"
+                                HorizontalAlignment="Left"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Row="2" Grid.Column="0"
+                             Text="Kategori:"
+                             VerticalAlignment="Center"/>
+                    <StackPanel Grid.Row="2" Grid.Column="1" Spacing="5">
+                        <StackPanel Orientation="Horizontal" Spacing="5">
+                            <ComboBox ItemsSource="{Binding Categories}"
+                                    SelectedItem="{Binding SelectedCategory}"
+                                    Width="300"
+                                    HorizontalAlignment="Left">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate x:DataType="models:Category">
+                                        <TextBlock Text="{Binding CategoryName}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                            <Button Command="{Binding AddCategoryCommand}">
+                                <PathIcon Data="{StaticResource add_regular}"/>
+                            </Button>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <TextBlock Grid.Row="3" Grid.Column="0"
+                             Text="E-posta:"
+                             VerticalAlignment="Center"/>
+                    <StackPanel Grid.Row="3" Grid.Column="1" Spacing="5">
+                        <TextBox Text="{Binding Email}"
+                                MaxWidth="300"
+                                HorizontalAlignment="Left"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Row="4" Grid.Column="0"
+                             Text="Telefon:"
+                             VerticalAlignment="Center"/>
+                    <StackPanel Grid.Row="4" Grid.Column="1" Spacing="5">
+                        <TextBox Text="{Binding Phone}"
+                                MaxWidth="300"
+                                HorizontalAlignment="Left"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+        </ScrollViewer>
+
+        <StackPanel Grid.Row="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Spacing="10"
+                    Margin="0,20,0,0">
+            <Button Command="{Binding CancelCommand}"
+                    Content="İptal"/>
+            <Button Command="{Binding SaveCommand}"
+                    Classes="accent"
+                    Content="Kaydet"/>
+        </StackPanel>
+    </Grid>
+</UserControl> 

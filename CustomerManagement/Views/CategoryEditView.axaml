@@ -1,0 +1,53 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:CustomerManagement.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="250"
+             x:Class="CustomerManagement.Views.CategoryEditView"
+             x:DataType="vm:CategoryEditViewModel">
+    <Grid RowDefinitions="Auto,*,Auto" Margin="20">
+        <TextBlock Grid.Row="0"
+                  Text="Yeni Kategori"
+                  Classes="h1"
+                  Margin="0,0,0,20"/>
+
+        <StackPanel Grid.Row="1" Spacing="20">
+            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto">
+                <TextBlock Grid.Row="0" Grid.Column="0"
+                         Text="Kategori Adı:"
+                         VerticalAlignment="Center"
+                         Width="150"/>
+                <StackPanel Grid.Row="0" Grid.Column="1" Spacing="5">
+                    <TextBox Text="{Binding CategoryName}"
+                            MaxWidth="300"
+                            HorizontalAlignment="Left"/>
+                </StackPanel>
+
+                <TextBlock Grid.Row="1" Grid.Column="0"
+                         Text="Açıklama:"
+                         VerticalAlignment="Center"/>
+                <StackPanel Grid.Row="1" Grid.Column="1" Spacing="5">
+                    <TextBox Text="{Binding CategoryDescription}"
+                            MaxWidth="300"
+                            Height="100"
+                            AcceptsReturn="True"
+                            TextWrapping="Wrap"
+                            HorizontalAlignment="Left"/>
+                </StackPanel>
+            </Grid>
+        </StackPanel>
+
+        <StackPanel Grid.Row="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Spacing="10"
+                    Margin="0,20,0,0">
+            <Button Command="{Binding CancelCommand}"
+                    Content="İptal"/>
+            <Button Command="{Binding SaveCommand}"
+                    Classes="accent"
+                    Content="Kaydet"/>
+        </StackPanel>
+    </Grid>
+</UserControl> 

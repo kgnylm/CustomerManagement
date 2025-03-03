@@ -1,0 +1,82 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:CustomerManagement.ViewModels"
+             xmlns:models="using:CustomerManagement.Models"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="CustomerManagement.Views.CustomerListView"
+             x:DataType="vm:CustomerListViewModel">
+    <Grid RowDefinitions="Auto,*" Margin="20">
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto,Auto" Margin="0,0,0,20">
+            <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="10">
+                <TextBox Text="{Binding SearchText}"
+                         Width="200"
+                         Watermark="Müşteri ara..."
+                         VerticalAlignment="Center"/>
+                <ComboBox ItemsSource="{Binding AllCategories}"
+                          SelectedItem="{Binding SelectedCategory}"
+                          Width="150"
+                          VerticalAlignment="Center">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate x:DataType="models:Category">
+                            <TextBlock Text="{Binding CategoryName}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </StackPanel>
+            
+            <Button Grid.Column="1"
+                    Command="{Binding RefreshCommand}"
+                    Margin="10,0"
+                    VerticalAlignment="Center">
+                <PathIcon Data="{StaticResource refresh_regular}"/>
+            </Button>
+            
+            <Button Grid.Column="2"
+                    Command="{Binding AddCustomerCommand}"
+                    Classes="accent"
+                    VerticalAlignment="Center">
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                    <PathIcon Data="{StaticResource add_regular}"/>
+                    <TextBlock Text="Yeni Müşteri"/>
+                </StackPanel>
+            </Button>
+        </Grid>
+
+        <DataGrid Grid.Row="1"
+                  Name="dataGrid"
+                  ItemsSource="{Binding Customers}"
+                  SelectedItem="{Binding SelectedCustomer}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Müşteri Kodu"
+                                  Binding="{Binding CustomerCode}"/>
+                <DataGridTextColumn Header="Müşteri Adı"
+                                  Binding="{Binding CustomerName}"/>
+                <DataGridTextColumn Header="Kategori"
+                                  Binding="{Binding Category.CategoryName}"/>
+                <DataGridTextColumn Header="E-posta"
+                                  Binding="{Binding Email}"/>
+                <DataGridTextColumn Header="Telefon"
+                                  Binding="{Binding Phone}"/>
+                <DataGridTemplateColumn Header="İşlemler">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" Spacing="5">
+                                <Button Command="{ReflectionBinding DataContext.EditCustomerCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}">
+                                    <PathIcon Data="{StaticResource edit_regular}"/>
+                                </Button>
+                                <Button Command="{ReflectionBinding DataContext.DeleteCustomerCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                        Classes="error">
+                                    <PathIcon Data="{StaticResource delete_regular}"/>
+                                </Button>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl> 
