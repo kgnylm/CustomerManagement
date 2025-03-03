@@ -7,8 +7,12 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="CustomerManagement.Views.CustomerListView"
              x:DataType="vm:CustomerListViewModel">
+    <UserControl.Resources>
+        <StreamGeometry x:Key="eye_show_regular">M12 9.005C13.657 9.005 15 10.348 15 12.005C15 13.662 13.657 15.005 12 15.005C10.343 15.005 9 13.662 9 12.005C9 10.348 10.343 9.005 12 9.005ZM12 7.505C9.51472 7.505 7.5 9.51972 7.5 12.005C7.5 14.4902 9.51472 16.505 12 16.505C14.4853 16.505 16.5 14.4902 16.5 12.005C16.5 9.51972 14.4853 7.505 12 7.505ZM12 4.005C7.52166 4.005 3.84399 6.81732 2.99173 10.6445C2.91516 10.9704 2.86072 11.3196 2.78518 12.0085C2.74263 12.3827 2.72839 12.5478 2.73398 12.6507C2.76479 13.0527 3.04979 13.3926 3.44387 13.4939C3.54454 13.5225 3.71058 13.5366 4.08476 13.5376C4.80802 13.5394 5.1583 13.5394 5.48809 13.5103C5.53787 13.5063 5.58773 13.5018 5.63764 13.4969L5.41424 12.0195C5.37224 12.0235 5.33015 12.0272 5.28797 12.0305C4.99436 12.0567 4.69428 12.0576 4.05804 12.0561C3.95648 12.0559 3.88531 12.0556 3.83385 12.0548C3.84138 11.9499 3.85595 11.8164 3.87759 11.6563C3.94397 11.0621 3.98846 10.7817 4.04635 10.5378C4.76504 7.34925 7.87198 5.005 12 5.005C16.128 5.005 19.235 7.34925 19.9537 10.5378C20.0116 10.7817 20.056 11.0621 20.1224 11.6563C20.1441 11.8164 20.1586 11.9499 20.1662 12.0548C20.1147 12.0556 20.0435 12.0559 19.942 12.0561C19.3057 12.0576 19.0056 12.0567 18.712 12.0305C18.6698 12.0272 18.6278 12.0235 18.5858 12.0195L18.3624 13.4969C18.4123 13.5018 18.4621 13.5063 18.5119 13.5103C18.8417 13.5394 19.192 13.5394 19.9152 13.5376C20.2894 13.5366 20.4555 13.5225 20.5561 13.4939C20.9502 13.3926 21.2352 13.0527 21.266 12.6507C21.2716 12.5478 21.2574 12.3827 21.2148 12.0085C21.1393 11.3196 21.0848 10.9704 21.0083 10.6445C20.156 6.81732 16.4783 4.005 12 4.005Z</StreamGeometry>
+    </UserControl.Resources>
+    
     <Grid RowDefinitions="Auto,*" Margin="20">
-        <Grid Grid.Row="0" ColumnDefinitions="*,Auto,Auto" Margin="0,0,0,20">
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,20">
             <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="10">
                 <TextBox Text="{Binding SearchText}"
                          Width="200"
@@ -27,13 +31,6 @@
             </StackPanel>
             
             <Button Grid.Column="1"
-                    Command="{Binding RefreshCommand}"
-                    Margin="10,0"
-                    VerticalAlignment="Center">
-                <PathIcon Data="{StaticResource refresh_regular}"/>
-            </Button>
-            
-            <Button Grid.Column="2"
                     Command="{Binding AddCustomerCommand}"
                     Classes="accent"
                     VerticalAlignment="Center">
@@ -49,7 +46,8 @@
                   ItemsSource="{Binding Customers}"
                   SelectedItem="{Binding SelectedCustomer}"
                   AutoGenerateColumns="False"
-                  IsReadOnly="True">
+                  IsReadOnly="True"
+                  >
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Müşteri Kodu"
                                   Binding="{Binding CustomerCode}"/>
@@ -65,7 +63,12 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" Spacing="5">
-                                <Button Command="{ReflectionBinding DataContext.EditCustomerCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}">
+                                <Button Command="{ReflectionBinding DataContext.ShowDetailsCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                        Classes="details">
+                                    <PathIcon Data="{StaticResource eye_show_regular}"/>
+                                </Button>
+                                <Button Command="{ReflectionBinding DataContext.EditCustomerCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                        Classes="edit">
                                     <PathIcon Data="{StaticResource edit_regular}"/>
                                 </Button>
                                 <Button Command="{ReflectionBinding DataContext.DeleteCustomerCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"

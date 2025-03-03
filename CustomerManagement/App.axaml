@@ -12,7 +12,6 @@
     <Application.Styles>
         <FluentTheme />
         <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
-        
         <Style Selector="TextBlock.h1">
             <Setter Property="FontSize" Value="24"/>
             <Setter Property="FontWeight" Value="Bold"/>
@@ -20,6 +19,16 @@
         
         <Style Selector="Button.error">
             <Setter Property="Background" Value="#dc3545"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+        <Style Selector="Button.edit">
+            <Setter Property="Background" Value="#e5d515"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+        <Style Selector="Button.details">
+            <Setter Property="Background" Value="#18acd1"/>
             <Setter Property="Foreground" Value="White"/>
         </Style>
         

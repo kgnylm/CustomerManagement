@@ -6,6 +6,8 @@ using System.Windows.Input;
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 
 namespace CustomerManagement.ViewModels;
 
@@ -34,6 +36,7 @@ public class CustomerListViewModel : ViewModelBase
         AddCustomerCommand = new RelayCommand(AddCustomer);
         EditCustomerCommand = new RelayCommand(EditCustomer, () => SelectedCustomer != null);
         DeleteCustomerCommand = new RelayCommand(DeleteCustomer, () => SelectedCustomer != null);
+        ShowDetailsCommand = new RelayCommand(ShowCustomerDetails, () => SelectedCustomer != null);
         RefreshCommand = new RelayCommand(LoadData);
     }
 
@@ -64,6 +67,7 @@ public class CustomerListViewModel : ViewModelBase
             {
                 (EditCustomerCommand as RelayCommand)?.NotifyCanExecuteChanged();
                 (DeleteCustomerCommand as RelayCommand)?.NotifyCanExecuteChanged();
+                (ShowDetailsCommand as RelayCommand)?.NotifyCanExecuteChanged();
             }
         }
     }
@@ -101,6 +105,7 @@ public class CustomerListViewModel : ViewModelBase
     public ICommand AddCustomerCommand { get; }
     public ICommand EditCustomerCommand { get; }
     public ICommand DeleteCustomerCommand { get; }
+    public ICommand ShowDetailsCommand { get; }
     public ICommand RefreshCommand { get; }
 
     public async Task Initialize()
@@ -119,13 +124,11 @@ public class CustomerListViewModel : ViewModelBase
             Customers = new ObservableCollection<Customer>(customers);
             Categories = new ObservableCollection<Category>(categories);
             
-            // Hepsi seçeneğini ekle
             var allCategory = new Category { CategoryId = 0, CategoryName = "Hepsi", CategoryDescription = "Tüm kategoriler" };
             var allCategories = new List<Category> { allCategory };
             allCategories.AddRange(categories);
             AllCategories = new ObservableCollection<Category>(allCategories);
             
-            // Başlangıçta "Hepsi" seçili olsun
             if (SelectedCategory == null)
             {
                 SelectedCategory = allCategory;
@@ -143,15 +146,12 @@ public class CustomerListViewModel : ViewModelBase
         {
             IsLoading = true;
             
-            // Önce tüm müşterileri al
             var allCustomers = await _customerService.GetAllCustomersAsync();
             
-            // Kategori filtresini uygula
             var customers = SelectedCategory == null || SelectedCategory.CategoryId == 0
                 ? allCustomers
                 : allCustomers.Where(c => c.CustomerCategory == SelectedCategory.CategoryId);
                 
-            // Arama filtresini uygula
             if (!string.IsNullOrWhiteSpace(SearchText))
             {
                 customers = customers.Where(c =>
@@ -204,5 +204,61 @@ public class CustomerListViewModel : ViewModelBase
         {
             IsLoading = false;
         }
+    }
+
+    private Task ShowCustomerDetails()
+    {
+        if (SelectedCustomer == null) return Task.CompletedTask;
+
+        var detailsWindow = new Window
+        {
+            Title = $"Müşteri Detayları - {SelectedCustomer.CustomerName}",
+            Width = 400,
+            WindowStartupLocation = WindowStartupLocation.CenterScreen,
+            CanResize = false,
+            ShowInTaskbar = false,
+            SizeToContent = SizeToContent.Height
+        };
+
+        var panel = new StackPanel
+        {
+            Margin = new Avalonia.Thickness(20),
+            Spacing = 10
+        };
+
+        var details = new[]
+        {
+            ("Müşteri ID:", SelectedCustomer.CustomerId.ToString()),
+            ("Müşteri Kodu:", SelectedCustomer.CustomerCode),
+            ("Müşteri Adı:", SelectedCustomer.CustomerName),
+            ("Kategori:", SelectedCustomer.Category?.CategoryName ?? "Belirtilmemiş"),
+            ("E-posta:", SelectedCustomer.Email),
+            ("Telefon:", SelectedCustomer.Phone),
+            ("Oluşturulma Tarihi:", SelectedCustomer.CreatedDate.ToString("dd.MM.yyyy HH:mm:ss")),
+            ("Güncelleme Tarihi:", SelectedCustomer.UpdateDate.ToString("dd.MM.yyyy HH:mm:ss"))
+        };
+
+        foreach (var (label, value) in details)
+        {
+            var itemPanel = new StackPanel { Orientation = Avalonia.Layout.Orientation.Horizontal, Spacing = 5 };
+            itemPanel.Children.Add(new TextBlock { Text = label, FontWeight = Avalonia.Media.FontWeight.Bold });
+            itemPanel.Children.Add(new TextBlock { Text = value });
+            panel.Children.Add(itemPanel);
+        }
+
+        var closeButton = new Button
+        {
+            Content = "Kapat",
+            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right,
+            Margin = new Avalonia.Thickness(0, 10, 0, 0)
+        };
+
+        closeButton.Click += (s, e) => detailsWindow.Close();
+        panel.Children.Add(closeButton);
+        
+        detailsWindow.Content = panel;
+        detailsWindow.Show();
+        
+        return Task.CompletedTask;
     }
 } 
