@@ -27,6 +27,7 @@ A modern desktop application built with Avalonia UI and .NET 6 for managing cust
 ```bash
 git clone https://github.com/yourusername/customer-management.git
 cd customer-management
+cd CustomerManagement
 ```
 
 2. Start SQL Server (if using Docker):
