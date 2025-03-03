@@ -25,7 +25,7 @@ A modern desktop application built with Avalonia UI and .NET 6 for managing cust
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/customer-management.git
+git clone https://github.com/kgnylm/customer-management.git
 cd customer-management
 cd CustomerManagement
 ```
