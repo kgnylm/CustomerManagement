@@ -17,45 +17,90 @@ A modern desktop application built with Avalonia UI and .NET 6 for managing cust
 ## Prerequisites
 
 - .NET 6.0 SDK or later
-- SQL Server 2019 or later
-- Docker (optional, for running SQL Server in a container)
+- Docker Desktop
+- Git
 
-## Getting Started
+## Detailed Installation Steps
 
-1. Clone the repository:
+1. **Clone the Repository:**
 
-```bash
-git clone https://github.com/kgnylm/customer-management.git
-cd customer-management
-cd CustomerManagement
-```
+   ```bash
+   git clone https://github.com/kgnylm/customer-management.git
+   cd customer-management
+   ```
 
-2. Start SQL Server (if using Docker):
+2. **Start SQL Server with Docker:**
 
-```bash
-docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStrong@Passw0rd" \
+   ```bash
+   docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStrong@Passw0rd" \
    -p 1433:1433 --name sql1 --hostname sql1 \
    -d mcr.microsoft.com/mssql/server:2019-latest
+   ```
+
+   > Note: Wait about 10-15 seconds for SQL Server to fully start
+
+3. **Install Entity Framework Tools:**
+
+   ```bash
+   dotnet tool install --global dotnet-ef
+   ```
+
+4. **Navigate to Project Directory and Restore Dependencies:**
+
+   ```bash
+   cd CustomerManagement
+   dotnet restore
+   ```
+
+5. **Create Database and Apply Migrations:**
+
+   ```bash
+   dotnet ef database update
+   ```
+
+6. **Run the Application:**
+   ```bash
+   dotnet run
+   ```
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Docker Container Issues:**
+
+   - If Docker was closed, restart Docker Desktop and run:
+     ```bash
+     docker start sql1
+     ```
+   - Wait 10-15 seconds before starting the application
+
+2. **Database Connection Issues:**
+
+   - Ensure SQL Server is running:
+     ```bash
+     docker ps | grep sql1
+     ```
+   - Check if the database exists:
+     ```bash
+     dotnet ef database update
+     ```
+
+3. **Entity Framework Tools Missing:**
+   - If you get "dotnet ef not found" error, run:
+     ```bash
+     dotnet tool install --global dotnet-ef
+     ```
+
+### Connection String
+
+The default connection string is:
+
+```
+Server=localhost,1433;Database=CustomerManagement;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True;
 ```
 
-3. Update the connection string in `App.axaml.cs` if needed:
-
-```csharp
-options.UseSqlServer("Server=localhost,1433;Database=CustomerManagement;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True;");
-```
-
-4. Apply database migrations:
-
-```bash
-dotnet ef database update
-```
-
-5. Build and run the application:
-
-```bash
-dotnet build
-dotnet run
-```
+You can modify this in `App.axaml.cs` if needed.
 
 ## Project Structure
 
@@ -68,20 +113,6 @@ CustomerManagement/
 ├── Views/               # Avalonia UI views
 └── App.axaml           # Application entry point and styling
 ```
-
-## Key Components
-
-- **Models**: Contains the domain entities like `Customer` and `Category`
-- **ViewModels**: Implements the MVVM pattern for UI logic
-- **Services**: Handles data operations and business logic
-- **Views**: Avalonia UI components for the user interface
-
-## Database Schema
-
-The application uses two main tables:
-
-- **Customers**: Stores customer information
-- **Categories**: Stores customer categories
 
 ## Features in Detail
 
@@ -103,4 +134,3 @@ The application uses two main tables:
 - Real-time search functionality
 - Filter by multiple fields
 - Category-based filtering
-
