@@ -193,17 +193,72 @@ public class CustomerListViewModel : ViewModelBase
     {
         if (SelectedCustomer == null) return;
 
-        try
+        var messageBox = new Window
         {
-            IsLoading = true;
-            await _customerService.DeleteCustomerAsync(SelectedCustomer.CustomerId);
-            Customers.Remove(SelectedCustomer);
-            SelectedCustomer = null;
-        }
-        finally
+            Title = "Müşteri Silme",
+            Width = 300,
+            Height = 150,
+            WindowStartupLocation = WindowStartupLocation.CenterScreen,
+            CanResize = false,
+            ShowInTaskbar = false,
+            SizeToContent = SizeToContent.Height
+        };
+
+        var panel = new StackPanel
         {
-            IsLoading = false;
-        }
+            Margin = new Avalonia.Thickness(20),
+            Spacing = 20
+        };
+
+        var messageText = new TextBlock
+        {
+            Text = $"{SelectedCustomer.CustomerName} isimli müşteriyi silmek istediğinize emin misiniz?",
+            TextWrapping = Avalonia.Media.TextWrapping.Wrap
+        };
+
+        var buttonPanel = new StackPanel
+        {
+            Orientation = Avalonia.Layout.Orientation.Horizontal,
+            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right,
+            Spacing = 10
+        };
+
+        var yesButton = new Button { Content = "Evet" };
+        var noButton = new Button { Content = "Hayır" };
+
+        buttonPanel.Children.Add(yesButton);
+        buttonPanel.Children.Add(noButton);
+        panel.Children.Add(messageText);
+        panel.Children.Add(buttonPanel);
+        messageBox.Content = panel;
+
+        var tcs = new TaskCompletionSource<bool>();
+
+        yesButton.Click += async (s, e) =>
+        {
+            try
+            {
+                IsLoading = true;
+                await _customerService.DeleteCustomerAsync(SelectedCustomer.CustomerId);
+                Customers.Remove(SelectedCustomer);
+                SelectedCustomer = null;
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+            messageBox.Close();
+            tcs.SetResult(true);
+        };
+
+        noButton.Click += (s, e) =>
+        {
+            messageBox.Close();
+            tcs.SetResult(false);
+        };
+
+        messageBox.Show();
+        await tcs.Task;
     }
 
     private Task ShowCustomerDetails()
